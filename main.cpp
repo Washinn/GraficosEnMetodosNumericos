@@ -26,7 +26,7 @@ BOOL CALLBACK DlgMain(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
             puntos[1].asign( -1.0, 1.0);
             puntos[2].asign( 2.0, 4.0);
             plano1.Lagrange(puntos,3);
-            
+
             PuntoF puntos_2[8];
             puntos_2[0].asign(-6.0, 3.0);
             puntos_2[1].asign(-4.0, 5.0);
@@ -38,7 +38,9 @@ BOOL CALLBACK DlgMain(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
             puntos_2[7].asign(8.0, 8.0);
             plano1.Newton(puntos_2,8,2.0);
 
-
+            plano1.fCos();
+            plano1.fSin();
+            plano1.fTan();
 
             EndPaint(hwndDlg,&paint_struct);
         }

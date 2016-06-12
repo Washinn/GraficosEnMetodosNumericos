@@ -22,7 +22,9 @@ private:
     float fact (float n);
 public:
     PlanoXY(HDC h,int nivelDeZoom,PuntoI i,PuntoI f);
-    
+    void fSin();
+    void fCos();
+    void fTan();
     void Newton(PuntoF *puntos,int n ,float h);
     void Lagrange(PuntoF *puntos,int n);
 };
@@ -303,5 +305,49 @@ void PlanoXY::Newton(PuntoF *puntos,int n ,float h){
         SetPixel(hdc,pt.x,pt.y,RGB(255, 139, 2));
     }
 
+}
+
+
+
+
+
+/*-----------------------------------------------------------------------------------------------------------------*/
+//  GRAFICA DE FUNCIONES TRIGONOMETRICASSSSSSS
+/*-----------------------------------------------------------------------------------------------------------------*/
+void PlanoXY::fSin(){
+    int pxi = -50;
+    int pxf = 50;
+    float y;
+    PuntoF pt;
+    for (float x = pxi; x < pxf; x+=0.0005){
+        y = sin(x);
+        pt.x = pCen.x + (x * zoom);
+        pt.y = pCen.y - (y * zoom);
+        SetPixel(hdc, pt.x , pt.y , RGB(160, 100, 240));
+    }
+}
+void PlanoXY::fCos(){
+    int pxi = -50;
+    int pxf = 50;
+    float y;
+    PuntoF pt;
+    for (float x = pxi; x < pxf; x+=0.0005){
+        y = cos(x);
+        pt.x = pCen.x + (x * zoom);
+        pt.y = pCen.y - (y * zoom);
+        SetPixel(hdc, pt.x , pt.y , RGB(160, 100, 240));
+    }
+}
+void PlanoXY::fTan(){
+    int pxi = -50;
+    int pxf = 50;
+    float y;
+    PuntoF pt;
+    for (float x = pxi; x < pxf; x+=0.0005){
+        y = tan(x);
+        pt.x = pCen.x + (x * zoom);
+        pt.y = pCen.y - (y * zoom);
+        SetPixel(hdc, pt.x , pt.y , RGB(160, 100, 240));
+    }
 }
 
