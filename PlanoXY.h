@@ -17,9 +17,13 @@ private:
     PuntoF getCentro();
     void dibujarPlano();
     float intLagrange(PuntoF *puntos,int n,float x);
+    float g(float *a0,int n,float s);
+    float c_b(float s,float n);
+    float fact (float n);
 public:
     PlanoXY(HDC h,int nivelDeZoom,PuntoI i,PuntoI f);
-
+    
+    void Newton(PuntoF *puntos,int n ,float h);
     void Lagrange(PuntoF *puntos,int n);
 };
 
@@ -158,3 +162,146 @@ void PlanoXY::Lagrange(PuntoF *puntos,int n){
         SetPixel(hdc, pt.x , pt.y , RGB(164, 111, 241));
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//---------------------------------------------------------------------------------------------
+// FUNCION FACTORIAL
+//---------------------------------------------------------------------------------------------
+float PlanoXY::fact(float n){
+	if(n > 1.0){
+		return n * fact(n-1.0);
+	}else if (n == 1.0){
+		return 1.0;
+	}
+}
+
+//---------------------------------------------------------------------------------------------
+//  COHEFICIENTE BINOMIAL
+//  RECIBE S QUE ES   S = (x-x0)/h
+//  RECIBE N QUE ES  EL VALOR EL QUE SE HALLARA  EL FACTORIAL CUANDO SEA
+//      DIFERENTE DE CERO O 1
+//---------------------------------------------------------------------------------------------
+float PlanoXY::c_b(float s,float n){
+
+    if(n == 0){
+        return 1;
+    }else if (n == 1){
+        return s;
+    }
+
+    float res_1 = (1.0/fact(n))*s;
+    float res_2 = 1.0;
+    for(float i = 1.0;i < n;i+=1.0){
+        res_2*=(s-i);
+    }
+
+    return res_2*res_1;
+}
+
+
+//---------------------------------------------------------------------------------------------
+// FUNCION G() MATEMATICAMENTE ES LA SUMATORIA  DE LA DIFERENCIA POR EL COHEFICIENTE BINOMIAL
+// ESTA FUNCION RECIBE:
+//      ARRAY  EL CUAL CONTIENE LA PRIMERA FILA DE LA TABLA DE DIFERENCIAS
+//      N LA CANTIDAD DE PUNTOS
+//      S QUE MATEMATICAMENTE ES  S = (x-x0)/h      donde h es la distancia entre
+//                                                  punto y punto en el eje x
+//---------------------------------------------------------------------------------------------
+float PlanoXY::g(float *a0,int n,float s){
+    float y = 0;
+    float temp_y = 1;
+    for(int i = 0 ; i < n ; i+=1 ){
+        temp_y *= a0[i]*c_b(s,i);
+        y += temp_y;
+        temp_y = 1;
+    }
+    return y;
+}
+
+
+
+//---------------------------------------------------------------------------------------------
+// DIBUJA  UNA CURVA A PARTIR DE  VARIOS PUNTOS
+//  RECIBE:
+//       puntos : UN ARRAY DE PUNTOS
+//      n  LA CANTIDAD DE PUNTOS
+//      H LA DISTANCIA  DE SEPARACION  DE LOS PUNTOS EN EL EJE X
+//---------------------------------------------------------------------------------------------
+void PlanoXY::Newton(PuntoF *puntos,int n ,float h){
+
+
+    // tbl_d_dif : la  tabla de diferencias
+    // s : variable para almacenar el valor de S  matematicamente
+    // a0 : es  un puntero para valores flotantes que contendra
+    //      la primera  fila de la tabla de diferencias
+    // x : es el valor que matematicamente tendra X de igual manera con y
+    // pt :  sera el punto transformado en el plano de la pantalla
+
+    float  tbl_d_dif[11][11];
+    float  s ;
+    float  *a0;
+    float  x,y;
+    PuntoF pt;
+
+    // size  tamano del esfera
+    float size = zoom * 0.1;
+    // se dibuja pequenas circuferencias por cada punto
+    // esto para ver los puntos por los cuales pasa la funcion
+    for (int i = 0; i < n; ++i){
+        pt.x = pCen.x + (puntos[i].x * zoom);
+        pt.y = pCen.y - (puntos[i].y * zoom);
+        Ellipse(hdc, pt.x - size, pt.y - size, pt.x + size, pt.y + size);
+    }
+
+
+
+
+
+    // SE LLENA LA PRIMERA COLUMNA DE LA TABLLA  CON LOS VALORES DE y
+    int jj = 0;
+    for (int i=0;i<n;i++) {
+        tbl_d_dif[i][jj] = puntos[i].y;
+    }
+
+    // SE CREA LA TABLA DE  DIFERENCIAS
+    //      NO SE TOMA EN CUENTA LA PRIMERA COLUMNA DE LA TABLA
+    //      POR TAL MOTIVO  j EMPIEZA EN 1
+    for (int j = 1; j < n; ++j){
+        for (int i = 0; i < n-j; ++i){
+            tbl_d_dif[i][j] = tbl_d_dif[i+1][j-1]-tbl_d_dif[i][j-1];
+        }
+    }
+
+    //  SE CREA  a0 QUE ES LA PRIMERA FILA DE  LA TABLA DE DIFERENCIAS
+    a0 = new float [n];
+    int  ii = 0;
+    for (int j = 0; j < n; ++j)   {
+        a0[j] = tbl_d_dif[ii][j];
+    }
+
+    for (x=puntos[0].x;x<puntos[n-1].x;x+=0.005) {
+        s = (x - puntos[0].x)/h;
+        y = g(a0,n,s);
+        pt.x = pCen.x + (x*zoom);
+        pt.y = pCen.y - (y*zoom);
+        SetPixel(hdc,pt.x,pt.y,RGB(255, 139, 2));
+    }
+
+}
+
