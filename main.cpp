@@ -41,6 +41,10 @@ BOOL CALLBACK DlgMain(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
             plano1.fCos();
             plano1.fSin();
             plano1.fTan();
+            
+            PuntoF pcentro;
+            pcentro.asign(1.0,2.0);
+            plano1.circunferencia(5,pcentro);
 
             EndPaint(hwndDlg,&paint_struct);
         }

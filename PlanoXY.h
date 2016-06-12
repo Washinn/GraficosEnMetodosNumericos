@@ -12,11 +12,11 @@ private:
     PuntoI pIni;
     PuntoI pFin;
     PuntoF pCen;
-
     HDC hdc;
     PuntoF getCentro();
     void dibujarPlano();
     float intLagrange(PuntoF *puntos,int n,float x);
+    float f(float x,int r,int sgn,PuntoF pcc);
     float g(float *a0,int n,float s);
     float c_b(float s,float n);
     float fact (float n);
@@ -27,6 +27,7 @@ public:
     void fTan();
     void Newton(PuntoF *puntos,int n ,float h);
     void Lagrange(PuntoF *puntos,int n);
+    void circunferencia(float r,PuntoF pcc);
 };
 
 
@@ -351,3 +352,33 @@ void PlanoXY::fTan(){
     }
 }
 
+/*-----------------------------------------------------------------------------------------------------------------*/
+//  GRAFICA DE FUNCION  CIRCUNFERENCIA
+/*-----------------------------------------------------------------------------------------------------------------*/
+void PlanoXY::circunferencia(float r,PuntoF pcc){
+
+    //int pxi = -50;
+    //int pxf = 50;
+    int pxi = pcc.x-r;
+    int pxf = pcc.x+r;
+    float y ;
+    PuntoF pt;
+    for (float x = pxi; x < pxf; x+=0.00005){
+        y = f(x,r,-1,pcc);
+        pt.x = pCen.x + (x * zoom);
+        pt.y = pCen.y - (y * zoom);
+        SetPixel(hdc, pt.x , pt.y , RGB(255, 2, 106));
+    }
+    for (float x = pxi; x < pxf; x+=0.00005){
+        y = f(x,r,1,pcc);
+        pt.x = pCen.x + (x * zoom);
+        pt.y = pCen.y - (y * zoom);
+        SetPixel(hdc, pt.x , pt.y , RGB(255, 2, 106));
+    }
+}
+
+
+// ECUACION DE CIRCUNFERENCIA  CON CENTRO EN pcc (H,K)
+float PlanoXY::f(float x,int r,int sgn,PuntoF pcc){
+    return  (( sgn * sqrt(pow(r,2) - pow(x,2) + (2*x*pcc.x) - pow(pcc.x,2)) ) + pcc.y);
+}
