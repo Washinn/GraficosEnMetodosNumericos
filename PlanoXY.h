@@ -16,10 +16,26 @@ private:
     HDC hdc;
     PuntoF getCentro();
     void dibujarPlano();
+    float intLagrange(PuntoF *puntos,int n,float x);
 public:
     PlanoXY(HDC h,int nivelDeZoom,PuntoI i,PuntoI f);
 
+    void Lagrange(PuntoF *puntos,int n);
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 PlanoXY::PlanoXY(HDC h,int nivelDeZoom,PuntoI i,PuntoI f){
     hdc = h;
@@ -94,4 +110,51 @@ void PlanoXY::dibujarPlano(){
         SetPixel(hdc, x, centro.y, RGB(53, 222, 243));
     }
 
+}
+
+
+
+
+
+
+float PlanoXY::intLagrange(PuntoF *puntos,int n,float x){
+    float result_y = 0;
+    float result_tmp = 1;
+    for (int i=0;i<n;i++) {
+        for (int j=0;j<n;j++) {
+            if(i != j){
+                result_tmp *= ((x - puntos[j].x)/(puntos[i].x - puntos[j].x));
+            }
+        }
+        result_tmp *= puntos[i].y;
+        result_y += result_tmp;
+        result_tmp = 1;
+    }
+    return result_y;
+}
+
+//---------------------------------------------------------------------------------------------
+// DIBUJA  UNA CURVA A PARTIR DE  VARIOS PUNTOS
+//---------------------------------------------------------------------------------------------
+void PlanoXY::Lagrange(PuntoF *puntos,int n){
+    // size  tamano del esfera
+    float size = zoom * 0.1;
+    // punto dde paso transformado
+    PuntoF ppt;
+    for (int i = 0; i < n; ++i){
+        ppt.x = pCen.x + (puntos[i].x * zoom);
+        ppt.y = pCen.y - (puntos[i].y * zoom);
+        Ellipse(hdc, ppt.x - size, ppt.y - size, ppt.x + size, ppt.y + size);
+    }
+
+    // PT  = PUNTO TRANSFORMADO
+    PuntoF pt;
+    // coordenada en "x" y coordenada en "y"  "MATEMATICAMENTE"
+    float x,y;
+    for (x = puntos[0].x ; x <= puntos[n-1].x ; x += 0.009) {
+        y = intLagrange(puntos,n,x);
+        pt.x = pCen.x + (x * zoom);
+        pt.y = pCen.y - (y * zoom);
+        SetPixel(hdc, pt.x , pt.y , RGB(164, 111, 241));
+    }
 }

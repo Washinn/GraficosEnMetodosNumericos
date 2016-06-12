@@ -21,6 +21,12 @@ BOOL CALLBACK DlgMain(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
             // SE CREA UNA INSTANCIA DE LA CLASE PLANOO
             PlanoXY plano1(hdc,20,p_ini,p_fin);
 
+            PuntoF puntos[3];
+            puntos[0].asign( -2.0, 4.0);
+            puntos[1].asign( -1.0, 1.0);
+            puntos[2].asign( 2.0, 4.0);
+
+            plano1.Lagrange(puntos,3);
 
             EndPaint(hwndDlg,&paint_struct);
         }
