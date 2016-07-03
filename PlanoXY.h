@@ -4,6 +4,9 @@
 #include <math.h>
 #include "resource.h"
 #include "Punto.h"
+#include <iostream>
+
+using namespace std;
 
 class PlanoXY{
 
@@ -20,6 +23,10 @@ private:
     float g(float *a0,int n,float s);
     float c_b(float s,float n);
     float fact (float n);
+
+    float f(float x);
+    float f(float x,float z);
+
 public:
     PlanoXY(HDC h,int nivelDeZoom,PuntoI i,PuntoI f);
     void fSin();
@@ -28,6 +35,11 @@ public:
     void Newton(PuntoF *puntos,int n ,float h);
     void Lagrange(PuntoF *puntos,int n);
     void circunferencia(float r,PuntoF pcc);
+
+    void integral(float a,float b,float n);
+    void integralGrafic(float a,float b);
+    void areaRectangulo();
+    void grafic3D();
 };
 
 
@@ -60,7 +72,6 @@ PuntoF PlanoXY::getCentro(){
     return centro;
 }
 
-
 //-----------------------------------------------------------------------------------------------------------------
 // DIBUJA LOS CUADROS (RECIBE UN PUNTO INICIAL Y UN PUNTO FINAL  RECIBE UN "z" QUE ES L TAMANO DE LOS CUADROS O NIVEL DE ZOOM)
 //-----------------------------------------------------------------------------------------------------------------
@@ -71,7 +82,6 @@ void PlanoXY::dibujarPlano(){
             SetPixel(hdc, x, y, RGB(39,40,32));
         }
     }
-
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //          PROBABILIDAD DE ERROR PORQUE NO SE USA LA FUNCION  "return_centro"
     // SE OBTIENE EL CENTRO DEL CONTEXTO
@@ -79,7 +89,6 @@ void PlanoXY::dibujarPlano(){
     centro.x = (pIni.x + pFin.x)/2;
     centro.y = (pIni.y + pFin.y)/2;
 //////////////////////////////////////////////////////////////////////////////////////////////////
-
 //   LINEAS VERTICALES Y
     // DEL CENTRO PARA ARRIBA
     for (int x = centro.x; x <= pFin.x ; x+=zoom){
@@ -93,7 +102,6 @@ void PlanoXY::dibujarPlano(){
             SetPixel(hdc, x, y, RGB(55, 55, 55));
         }
     }
-
 // LINEAS HORIZONTALES X
     // DEL CENTRO PARA DERECHA
     for (int y = centro.y; y <= pFin.y ; y+=zoom){
@@ -107,7 +115,6 @@ void PlanoXY::dibujarPlano(){
             SetPixel(hdc, x, y, RGB(55, 55, 55));
         }
     }
-
     // RECTA VERTICAL  CENTRO
     for (int y = pIni.y; y <= pFin.y; ++y)    {
         SetPixel(hdc, centro.x, y, RGB(53, 222, 243));
@@ -116,7 +123,6 @@ void PlanoXY::dibujarPlano(){
     for (int x = pIni.x; x <= pFin.x; ++x)    {
         SetPixel(hdc, x, centro.y, RGB(53, 222, 243));
     }
-
 }
 
 
@@ -144,6 +150,7 @@ float PlanoXY::intLagrange(PuntoF *puntos,int n,float x){
 // DIBUJA  UNA CURVA A PARTIR DE  VARIOS PUNTOS
 //---------------------------------------------------------------------------------------------
 void PlanoXY::Lagrange(PuntoF *puntos,int n){
+    /*
     // size  tamano del esfera
     float size = zoom * 0.1;
     // punto dde paso transformado
@@ -153,7 +160,7 @@ void PlanoXY::Lagrange(PuntoF *puntos,int n){
         ppt.y = pCen.y - (puntos[i].y * zoom);
         Ellipse(hdc, ppt.x - size, ppt.y - size, ppt.x + size, ppt.y + size);
     }
-
+    */
     // PT  = PUNTO TRANSFORMADO
     PuntoF pt;
     // coordenada en "x" y coordenada en "y"  "MATEMATICAMENTE"
@@ -165,14 +172,6 @@ void PlanoXY::Lagrange(PuntoF *puntos,int n){
         SetPixel(hdc, pt.x , pt.y , RGB(164, 111, 241));
     }
 }
-
-
-
-
-
-
-
-
 
 
 
@@ -201,22 +200,18 @@ float PlanoXY::fact(float n){
 //      DIFERENTE DE CERO O 1
 //---------------------------------------------------------------------------------------------
 float PlanoXY::c_b(float s,float n){
-
     if(n == 0){
         return 1;
     }else if (n == 1){
         return s;
     }
-
     float res_1 = (1.0/fact(n))*s;
     float res_2 = 1.0;
     for(float i = 1.0;i < n;i+=1.0){
         res_2*=(s-i);
     }
-
     return res_2*res_1;
 }
-
 
 //---------------------------------------------------------------------------------------------
 // FUNCION G() MATEMATICAMENTE ES LA SUMATORIA  DE LA DIFERENCIA POR EL COHEFICIENTE BINOMIAL
@@ -237,8 +232,6 @@ float PlanoXY::g(float *a0,int n,float s){
     return y;
 }
 
-
-
 //---------------------------------------------------------------------------------------------
 // DIBUJA  UNA CURVA A PARTIR DE  VARIOS PUNTOS
 //  RECIBE:
@@ -247,21 +240,17 @@ float PlanoXY::g(float *a0,int n,float s){
 //      H LA DISTANCIA  DE SEPARACION  DE LOS PUNTOS EN EL EJE X
 //---------------------------------------------------------------------------------------------
 void PlanoXY::Newton(PuntoF *puntos,int n ,float h){
-
-
     // tbl_d_dif : la  tabla de diferencias
     // s : variable para almacenar el valor de S  matematicamente
     // a0 : es  un puntero para valores flotantes que contendra
     //      la primera  fila de la tabla de diferencias
     // x : es el valor que matematicamente tendra X de igual manera con y
     // pt :  sera el punto transformado en el plano de la pantalla
-
     float  tbl_d_dif[11][11];
     float  s ;
     float  *a0;
     float  x,y;
     PuntoF pt;
-
     // size  tamano del esfera
     float size = zoom * 0.1;
     // se dibuja pequenas circuferencias por cada punto
@@ -271,10 +260,6 @@ void PlanoXY::Newton(PuntoF *puntos,int n ,float h){
         pt.y = pCen.y - (puntos[i].y * zoom);
         Ellipse(hdc, pt.x - size, pt.y - size, pt.x + size, pt.y + size);
     }
-
-
-
-
 
     // SE LLENA LA PRIMERA COLUMNA DE LA TABLLA  CON LOS VALORES DE y
     int jj = 0;
@@ -305,8 +290,11 @@ void PlanoXY::Newton(PuntoF *puntos,int n ,float h){
         pt.y = pCen.y - (y*zoom);
         SetPixel(hdc,pt.x,pt.y,RGB(255, 139, 2));
     }
-
 }
+
+
+
+
 
 
 
@@ -352,11 +340,14 @@ void PlanoXY::fTan(){
     }
 }
 
+
+
 /*-----------------------------------------------------------------------------------------------------------------*/
 //  GRAFICA DE FUNCION  CIRCUNFERENCIA
 /*-----------------------------------------------------------------------------------------------------------------*/
 void PlanoXY::circunferencia(float r,PuntoF pcc){
 
+    // x varia desde punto centro menos el radio hasta punto centro mas es radio
     //int pxi = -50;
     //int pxf = 50;
     int pxi = pcc.x-r;
@@ -382,3 +373,127 @@ void PlanoXY::circunferencia(float r,PuntoF pcc){
 float PlanoXY::f(float x,int r,int sgn,PuntoF pcc){
     return  (( sgn * sqrt(pow(r,2) - pow(x,2) + (2*x*pcc.x) - pow(pcc.x,2)) ) + pcc.y);
 }
+
+
+
+
+
+
+
+// INTEGRAL
+void PlanoXY::integral(float a,float b,float n){
+
+	//	n ES LA CANTIDAD DE INTERVALOS
+	//	a ES EL PUNTO INICIAL EN X
+	//	b ES EL PUNTO FINAL EN X
+	//	h ES EL INTERVALO  ENTRE LA CANTIDAD DE INTERVALOS
+	//	I ES EL VALOR DE LA INTEGRAL
+	//	s ES EL ACUMULADOR DONDE SE SUMARA LOS VALORES ENTRE LOS INTERVALOS
+	//		a Y b ( SIN INCLUIR  ESTOS  EXTREMOS , ES DECIR  A Y B)
+	//		YA QUE f(a) Y f(b) NO SE MULTIPLICAN POR 2 ,
+	//		EN CAMBIO LOS  VALORES QUE ESTAN EN EL INTERVALO SII
+
+    float h,
+        I,
+        f0,
+        fn,
+        s;
+
+	h = (b-a)/n;
+	f0 = f(a),
+	fn = f(b),
+	s = 0;
+
+	for (float i = a+h; i <= b-h; i+=h ){
+		s += 2*f(i);
+	}
+
+	I = (h/2)*(f0+s+fn);
+	cout<<I<<endl;
+}
+
+
+
+
+//FUNCION CUADRARTICA
+float PlanoXY::f(float x){
+	return pow(x,2);
+}
+
+
+/*
+void PlanoXY::integralGrafic(float a,float b){
+    //	n ES LA CANTIDAD DE INTERVALOS
+	//	a ES EL PUNTO INICIAL EN X
+	//	b ES EL PUNTO FINAL EN X
+	//	h ES EL INTERVALO  ENTRE LA CANTIDAD DE INTERVALOS
+	//	I ES EL VALOR DE LA INTEGRAL
+	//	s ES EL ACUMULADOR DONDE SE SUMARA LOS VALORES ENTRE LOS INTERVALOS
+	//		a Y b ( SIN INCLUIR  ESTOS  EXTREMOS , ES DECIR  A Y B)
+	//		YA QUE f(a) Y f(b) NO SE MULTIPLICAN POR 2 ,
+	//		EN CAMBIO LOS  VALORES QUE ESTAN EN EL INTERVALO SII
+
+
+
+	float 	n = 50;
+        h = (b-a)/n,
+		I,
+		f0 = f(a),
+		fn = f(b),
+		s = 0;
+
+	for (float i = a+h; i <= b-h; i+=h ){
+		s += 2*f(i);
+	}
+
+	I = (h/2)*(f0+s+fn);
+
+	cout<<I<<endl;
+}
+*/
+
+/*
+void PlanoXY::grafic3D(){
+    int Maxx=400;
+    int Maxy=400;
+
+
+    int rot_x = 70;
+    int rot_y = 40;
+
+
+    int posicion1 = rot_x;
+    int posicion2 = rot_y;
+    float Elev=posicion1*(2*M_PI)/100;
+    float Giro=posicion2*(2*M_PI)/100;
+    float x,y,z;
+    float var=0.2;
+    float xini=-10,xfin=10;
+    float posx,posy;
+    float x2D,y2D;
+
+    //PuntoF_3D
+
+    //float x,y,z;
+    
+    
+
+    for(x=xini/3;x<xfin/3;x+=var){   
+        for(z=xini/3;z<xfin/3;z+=var){   
+            y=f(x,z);
+            x2D= x*cos(Elev)-z*sin(Elev);
+            y2D=-x*sin(Elev)*sin(Giro)+y*cos(Giro)-z*cos(Elev)*sin(Giro);
+            posx=x2D*Maxx/(xfin-xini);
+            posy=y2D*Maxx/(xfin-xini);
+            SetPixel(hdc,Maxx/2+posx,Maxy/2-posy,RGB(250,22,23));
+        }
+    }
+}
+
+
+
+float PlanoXY::f(float x,float z){
+    return sqrt ((x*x)+(z*z));
+    //return 25-pow(x,2)-pow(z,2);
+}
+*/
