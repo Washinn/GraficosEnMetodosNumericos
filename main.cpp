@@ -51,6 +51,7 @@ BOOL CALLBACK DlgMain(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
             plano1.circunferencia(5,pcentro);
 */
             plano1.integral(1,4);
+            plano1.grafic3D();
             EndPaint(hwndDlg,&paint_struct);
         }
 

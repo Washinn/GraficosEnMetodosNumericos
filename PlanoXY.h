@@ -24,6 +24,7 @@ private:
     float c_b(float s,float n);
     float fact (float n);
 
+    float f(float x,float z);
     float f(float x);
 
 public:
@@ -38,7 +39,7 @@ public:
     void integral(float a,float b);
     //void integralGrafic(float a,float b);
     //void areaRectangulo();
-    //void grafic3D();
+    void grafic3D();
 };
 
 
@@ -487,7 +488,7 @@ void PlanoXY::integralGrafic(float a,float b){
 }
 */
 
-/*
+
 void PlanoXY::grafic3D(){
     int Maxx=400;
     int Maxy=400;
@@ -531,4 +532,4 @@ float PlanoXY::f(float x,float z){
     return sqrt ((x*x)+(z*z));
     //return 25-pow(x,2)-pow(z,2);
 }
-*/
+
