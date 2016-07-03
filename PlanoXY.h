@@ -25,7 +25,6 @@ private:
     float fact (float n);
 
     float f(float x);
-    float f(float x,float z);
 
 public:
     PlanoXY(HDC h,int nivelDeZoom,PuntoI i,PuntoI f);
@@ -36,10 +35,10 @@ public:
     void Lagrange(PuntoF *puntos,int n);
     void circunferencia(float r,PuntoF pcc);
 
-    void integral(float a,float b,float n);
-    void integralGrafic(float a,float b);
-    void areaRectangulo();
-    void grafic3D();
+    void integral(float a,float b);
+    //void integralGrafic(float a,float b);
+    //void areaRectangulo();
+    //void grafic3D();
 };
 
 
@@ -381,24 +380,32 @@ float PlanoXY::f(float x,int r,int sgn,PuntoF pcc){
 
 
 // INTEGRAL
-void PlanoXY::integral(float a,float b,float n){
+//  PRETENDE CREAR UNA FUNCION QUE DADOS 2 INTERVALOS  NOS DEVUELVA LA INTEGRAL  ENTRE ESOS INTERVALOS
+//  LA FUNCION  QUE SE INTEGRARA  YA ESTARA DEFINIDA
+//  LUEGO DE DEOVLER  EL RESULTADO POR LA CONSOLA
+//  SE PRETENDE GRAFICAR LA FUNCION Y
+//  FINALEMTE  MOSTRAR EL AREA  DE LA INTEGRAL
+//
+void PlanoXY::integral(float a,float b){
 
 	//	n ES LA CANTIDAD DE INTERVALOS
 	//	a ES EL PUNTO INICIAL EN X
 	//	b ES EL PUNTO FINAL EN X
-	//	h ES EL INTERVALO  ENTRE LA CANTIDAD DE INTERVALOS
+	//	h ES LA CANTIDAD DEL INTERVALO  ENTRE LA CANTIDAD DE INTERVALOS
 	//	I ES EL VALOR DE LA INTEGRAL
 	//	s ES EL ACUMULADOR DONDE SE SUMARA LOS VALORES ENTRE LOS INTERVALOS
 	//		a Y b ( SIN INCLUIR  ESTOS  EXTREMOS , ES DECIR  A Y B)
 	//		YA QUE f(a) Y f(b) NO SE MULTIPLICAN POR 2 ,
 	//		EN CAMBIO LOS  VALORES QUE ESTAN EN EL INTERVALO SII
 
-    float h,
+    float n,
+        h,
         I,
         f0,
         fn,
         s;
 
+    n = 50;
 	h = (b-a)/n;
 	f0 = f(a),
 	fn = f(b),
@@ -409,9 +416,36 @@ void PlanoXY::integral(float a,float b,float n){
 	}
 
 	I = (h/2)*(f0+s+fn);
-	cout<<I<<endl;
-}
+	cout<<"el valor de la integral -> "<<I<<endl;
 
+    //---------------------------------------------------------------
+
+    //  PARA GRAFICAR SE  TENDRA QUE TENER UN INTERVALO EN EL EJE X
+
+    float x0,xn;
+    PuntoF pt;
+    float x,y;
+    x0=-50;
+    xn=50;
+
+    for(x=x0;x<=xn;x+=0.001){
+        y=f(x);
+        pt.x=pCen.x+x*zoom;
+        pt.y=pCen.y-y*zoom;
+        SetPixel(hdc,pt.x,pt.y,RGB(255, 2, 106));
+    }
+
+    //--------------------------------------------------------------
+    // EN ESTA SECCION SE  GRAFICA EL AREA DEL LA INTEGRAL
+    for(x=a;x<=b;x+=0.2){
+        for(y=0;y<=f(x);y+=0.2){
+            pt.x = pCen.x+x*zoom;
+            pt.y = pCen.y-y*zoom;
+            SetPixel(hdc,pt.x,pt.y,RGB(117,113,94));
+        }
+    }
+
+}
 
 
 
@@ -419,6 +453,7 @@ void PlanoXY::integral(float a,float b,float n){
 float PlanoXY::f(float x){
 	return pow(x,2);
 }
+
 
 
 /*
@@ -475,11 +510,11 @@ void PlanoXY::grafic3D(){
     //PuntoF_3D
 
     //float x,y,z;
-    
-    
 
-    for(x=xini/3;x<xfin/3;x+=var){   
-        for(z=xini/3;z<xfin/3;z+=var){   
+
+
+    for(x=xini/3;x<xfin/3;x+=var){
+        for(z=xini/3;z<xfin/3;z+=var){
             y=f(x,z);
             x2D= x*cos(Elev)-z*sin(Elev);
             y2D=-x*sin(Elev)*sin(Giro)+y*cos(Giro)-z*cos(Elev)*sin(Giro);
