@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1467522486 source:g:\proyects git\graficos en metodos numericos\main.cpp
+1467745623 source:g:\proyects git\graficos en metodos numericos\main.cpp
 	"PlanoXY.h"
 
 1385316878 g:\proyects git\graficos en metodos numericos\resource.h
@@ -10,14 +10,17 @@
 	<richedit.h>
 	"resource.h"
 
-1467522436 g:\proyects git\graficos en metodos numericos\planoxy.h
+1467745878 g:\proyects git\graficos en metodos numericos\planoxy.h
 	<windows.h>
 	<commctrl.h>
 	<stdio.h>
 	<math.h>
+	<iostream>
 	"resource.h"
 	"Punto.h"
-	<iostream>
 
 1467509646 g:\proyects git\graficos en metodos numericos\punto.h
+
+1467744589 g:\proyects git\graficos en metodos numericos\planoxy.cpp
+	"PlanoXY.h"
 

@@ -2,10 +2,9 @@
 #include <commctrl.h>
 #include <stdio.h>
 #include <math.h>
+#include <iostream>
 #include "resource.h"
 #include "Punto.h"
-#include <iostream>
-
 using namespace std;
 
 class PlanoXY{
@@ -41,10 +40,6 @@ public:
     //void areaRectangulo();
     void grafic3D();
 };
-
-
-
-
 
 
 
@@ -115,6 +110,7 @@ void PlanoXY::dibujarPlano(){
             SetPixel(hdc, x, y, RGB(55, 55, 55));
         }
     }
+    /*
     // RECTA VERTICAL  CENTRO
     for (int y = pIni.y; y <= pFin.y; ++y)    {
         SetPixel(hdc, centro.x, y, RGB(53, 222, 243));
@@ -123,6 +119,7 @@ void PlanoXY::dibujarPlano(){
     for (int x = pIni.x; x <= pFin.x; ++x)    {
         SetPixel(hdc, x, centro.y, RGB(53, 222, 243));
     }
+    */
 }
 
 
@@ -417,7 +414,7 @@ void PlanoXY::integral(float a,float b){
 	}
 
 	I = (h/2)*(f0+s+fn);
-	cout<<"el valor de la integral -> "<<I<<endl;
+	//cout<<"el valor de la integral -> "<<I<<endl;
 
     //---------------------------------------------------------------
 
@@ -457,6 +454,15 @@ float PlanoXY::f(float x){
 
 
 
+float PlanoXY::f(float x,float z){
+    return sqrt ((x*x)+(z*z));
+    //return 25-pow(x,2)-pow(z,2);
+}
+
+
+
+
+
 /*
 void PlanoXY::integralGrafic(float a,float b){
     //	n ES LA CANTIDAD DE INTERVALOS
@@ -490,12 +496,12 @@ void PlanoXY::integralGrafic(float a,float b){
 
 
 void PlanoXY::grafic3D(){
-    int Maxx=400;
-    int Maxy=400;
+    int Maxx=600;
+    int Maxy=500;
 
 
     int rot_x = 70;
-    int rot_y = 40;
+    int rot_y = 10;
 
 
     int posicion1 = rot_x;
@@ -503,7 +509,7 @@ void PlanoXY::grafic3D(){
     float Elev=posicion1*(2*M_PI)/100;
     float Giro=posicion2*(2*M_PI)/100;
     float x,y,z;
-    float var=0.2;
+    float var=0.1;
     float xini=-10,xfin=10;
     float posx,posy;
     float x2D,y2D;
@@ -521,15 +527,11 @@ void PlanoXY::grafic3D(){
             y2D=-x*sin(Elev)*sin(Giro)+y*cos(Giro)-z*cos(Elev)*sin(Giro);
             posx=x2D*Maxx/(xfin-xini);
             posy=y2D*Maxx/(xfin-xini);
-            SetPixel(hdc,Maxx/2+posx,Maxy/2-posy,RGB(250,22,23));
+            SetPixel(hdc,Maxx/2+posx,Maxy/2-posy,RGB(240,230,136));
         }
     }
+
+
 }
 
-
-
-float PlanoXY::f(float x,float z){
-    return sqrt ((x*x)+(z*z));
-    //return 25-pow(x,2)-pow(z,2);
-}
 

@@ -19,7 +19,7 @@ BOOL CALLBACK DlgMain(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
             PuntoI p_ini(0,0);
             PuntoI p_fin(r.right,r.bottom);
             // SE CREA UNA INSTANCIA DE LA CLASE PLANOO
-            PlanoXY plano1(hdc,20,p_ini,p_fin);
+            PlanoXY plano1(hdc,15,p_ini,p_fin);
 /*
             plano1.grafic3D();
             //plano1.integral(1,4,30);
@@ -50,7 +50,7 @@ BOOL CALLBACK DlgMain(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
             pcentro.asign(1.0,2.0);
             plano1.circunferencia(5,pcentro);
 */
-            plano1.integral(1,4);
+            //plano1.integral(1,4);
             plano1.grafic3D();
             EndPaint(hwndDlg,&paint_struct);
         }
