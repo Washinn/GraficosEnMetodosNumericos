@@ -15,6 +15,7 @@ private:
     PuntoI pFin;
     PuntoF pCen;
     HDC hdc;
+    // agregar punto transformado
     PuntoF getCentro();
     void dibujarPlano();
     float intLagrange(PuntoF *puntos,int n,float x);
@@ -24,7 +25,12 @@ private:
     float fact (float n);
 
     float f(float x,float z);
+    float f(float x,float z,int s);
     float f(float x);
+
+    float xx(float x,float z);
+    float yy(float x,float z);
+    float zz(float x,float z);
 
 public:
     PlanoXY(HDC h,int nivelDeZoom,PuntoI i,PuntoI f);
@@ -110,7 +116,7 @@ void PlanoXY::dibujarPlano(){
             SetPixel(hdc, x, y, RGB(55, 55, 55));
         }
     }
-    /*
+/*
     // RECTA VERTICAL  CENTRO
     for (int y = pIni.y; y <= pFin.y; ++y)    {
         SetPixel(hdc, centro.x, y, RGB(53, 222, 243));
@@ -119,7 +125,7 @@ void PlanoXY::dibujarPlano(){
     for (int x = pIni.x; x <= pFin.x; ++x)    {
         SetPixel(hdc, x, centro.y, RGB(53, 222, 243));
     }
-    */
+*/
 }
 
 
@@ -414,12 +420,12 @@ void PlanoXY::integral(float a,float b){
 	}
 
 	I = (h/2)*(f0+s+fn);
-	//cout<<"el valor de la integral -> "<<I<<endl;
+	cout<<"el valor de la integral desde -> "<<a<<" hasta "<<b<<" es  "<<I<<endl;
 
     //---------------------------------------------------------------
 
     //  PARA GRAFICAR SE  TENDRA QUE TENER UN INTERVALO EN EL EJE X
-
+    //  x VARIA  DESDE x0 HASTA xn
     float x0,xn;
     PuntoF pt;
     float x,y;
@@ -449,17 +455,28 @@ void PlanoXY::integral(float a,float b){
 
 //FUNCION CUADRARTICA
 float PlanoXY::f(float x){
-	return pow(x,2);
+	//return pow(x,2);
+    return pow((x-4),3)+(2*pow((x-4.5),2)+x-1) ;
 }
 
 
 
 float PlanoXY::f(float x,float z){
     return sqrt ((x*x)+(z*z));
-    //return 25-pow(x,2)-pow(z,2);
+    //return 50-pow(x,2)-pow(z,2);
+    //return acos(z-sin(x));
+    //return sgn*(sqrt(4000-pow(z,2)-pow(x,2))); //esfera
+    //return s*(sqrt (9*(((z*z)/4)-((x*x)/16))));
 }
 
 
+float PlanoXY::f(float x,float z,int sgn){
+    //return sqrt ((x*x)+(z*z));
+    //return 25-pow(x,2)-pow(z,2);
+    //return acos(z-sin(x));
+    //return sgn*(sqrt(4000-pow(z,2)-pow(x,2))); //esfera
+    //return sgn*(sqrt (9*(((z*z)/4)-((x*x)/16))));
+}
 
 
 
@@ -499,9 +516,16 @@ void PlanoXY::grafic3D(){
     int Maxx=600;
     int Maxy=500;
 
+    // ROTACION RESPECTO AL EJE X
+    // ROTACION RESPECTO AL EJE Y
+    //int rot_x = 60;
+    int rot_x = 45;
+    int rot_y = 85;
+/*
+    int rot_x = 45;
+    int rot_y = 5;
+*/
 
-    int rot_x = 70;
-    int rot_y = 10;
 
 
     int posicion1 = rot_x;
@@ -509,8 +533,8 @@ void PlanoXY::grafic3D(){
     float Elev=posicion1*(2*M_PI)/100;
     float Giro=posicion2*(2*M_PI)/100;
     float x,y,z;
-    float var=0.1;
-    float xini=-10,xfin=10;
+    float var=0.5;
+    float xini=-100,xfin=100;
     float posx,posy;
     float x2D,y2D;
 
@@ -520,16 +544,51 @@ void PlanoXY::grafic3D(){
 
 
 
-    for(x=xini/3;x<xfin/3;x+=var){
-        for(z=xini/3;z<xfin/3;z+=var){
+    for(x=xini;x<xfin;x+=var){
+        for(z=xini;z<xfin;z+=var){
             y=f(x,z);
             x2D= x*cos(Elev)-z*sin(Elev);
             y2D=-x*sin(Elev)*sin(Giro)+y*cos(Giro)-z*cos(Elev)*sin(Giro);
             posx=x2D*Maxx/(xfin-xini);
             posy=y2D*Maxx/(xfin-xini);
-            SetPixel(hdc,Maxx/2+posx,Maxy/2-posy,RGB(240,230,136));
+            //SetPixel(hdc,pCen.x+posx,pCen.y-posy,RGB(200+x,sqrt(190+y),96+z));
+            SetPixel(hdc,pCen.x+posx,pCen.y-posy,RGB(sqrt(200+x),190+y,96+z));
+            //SetPixel(hdc,pCen.x+posx,pCen.y-posy,RGB(x*x,z*z,y*y));
+
+            //SetPixel(hdc,pCen.x+posx,pCen.y-posy,RGB(240,230,136));
         }
     }
+
+
+
+/*
+    for(x=xini;x<xfin;x+=var){
+        for(z=xini;z<xfin;z+=var){
+            y=f(x,z,1);
+            x2D= x*cos(Elev)-z*sin(Elev);
+            y2D=-x*sin(Elev)*sin(Giro)+y*cos(Giro)-z*cos(Elev)*sin(Giro);
+            posx=x2D*Maxx/(xfin-xini);
+            posy=y2D*Maxx/(xfin-xini);
+            SetPixel(hdc,pCen.x+posx,pCen.y-posy,RGB(sqrt(200+x),190+y,96+z));
+            //SetPixel(hdc,pCen.x+posx,pCen.y-posy,RGB(x*x,z*z,y*y));
+
+            //SetPixel(hdc,pCen.x+posx,pCen.y-posy,RGB(240,230,136));
+        }
+    }
+
+    for(x=xini;x<xfin;x+=var){
+        for(z=xini;z<xfin;z+=var){
+            y=f(x,z,-1);
+            x2D= x*cos(Elev)-z*sin(Elev);
+            y2D=-x*sin(Elev)*sin(Giro)+y*cos(Giro)-z*cos(Elev)*sin(Giro);
+            posx=x2D*Maxx/(xfin-xini);
+            posy=y2D*Maxx/(xfin-xini);
+            SetPixel(hdc,pCen.x+posx,pCen.y-posy,RGB(sqrt(200-x),190+y,96+z));
+            //SetPixel(hdc,pCen.x+posx,pCen.y-posy,RGB(240,230,136));
+        }
+    }
+*/
+
 
 
 }
