@@ -33,6 +33,7 @@ private:
     float zz(float x,float z);
 
 
+
 public:
     PlanoXY(HDC h,int nivelDeZoom,PuntoI i,PuntoI f);
     void fSin();
@@ -41,21 +42,14 @@ public:
     void Newton(PuntoF *puntos,int n ,float h);
     void Lagrange(PuntoF *puntos,int n);
     void circunferencia(float r,PuntoF pcc);
-    
+
     void integral(float a,float b);
     //void integralGrafic(float a,float b);
     //void areaRectangulo();
     void grafic3D();
-    void pintarPunto(int x,int y);
-    void transformar(int x,int y);
+    void pintarPunto(PuntoF p);
+    PuntoF transformar(PuntoF p);
 };
-
-
-
-
-
-
-
 
 
 
@@ -597,10 +591,15 @@ void PlanoXY::grafic3D(){
 }
 
 
-void PlanoXY::pintarPunto(int x,int y){
-
+void PlanoXY::pintarPunto(PuntoF p){
+    PuntoF res;
+    res = transformar(p);
+    SetPixel(hdc,res.x,res.y,RGB(240,230,96));
 }
 
-void PlanoXY::transformar(int x,int y){
-
+PuntoF PlanoXY::transformar(PuntoF p){
+    PuntoF pTrasns;
+    pTrasns.x = pCen.x + p.x * zoom;
+    pTrasns.y = pCen.y - p.y * zoom;
+    return pTrasns;
 }
