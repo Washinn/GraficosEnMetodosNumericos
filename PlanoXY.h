@@ -55,6 +55,9 @@ public:
 
 
 
+
+
+
 PlanoXY::PlanoXY(HDC h,int nivelDeZoom,PuntoI i,PuntoI f){
     hdc = h;
 	zoom = nivelDeZoom;
@@ -168,9 +171,7 @@ void PlanoXY::Lagrange(PuntoF *puntos,int n){
     float x,y;
     for (x = puntos[0].x ; x <= puntos[n-1].x ; x += 0.009) {
         y = intLagrange(puntos,n,x);
-        pt.x = pCen.x + (x * zoom);
-        pt.y = pCen.y - (y * zoom);
-        SetPixel(hdc, pt.x , pt.y , RGB(164, 111, 241));
+        pintarPunto(x,y);
     }
 }
 
@@ -287,9 +288,7 @@ void PlanoXY::Newton(PuntoF *puntos,int n ,float h){
     for (x=puntos[0].x;x<puntos[n-1].x;x+=0.005) {
         s = (x - puntos[0].x)/h;
         y = g(a0,n,s);
-        pt.x = pCen.x + (x*zoom);
-        pt.y = pCen.y - (y*zoom);
-        SetPixel(hdc,pt.x,pt.y,RGB(255, 139, 2));
+        pintarPunto(x,y);
     }
 }
 
@@ -308,36 +307,27 @@ void PlanoXY::fSin(){
     int pxi = -50;
     int pxf = 50;
     float y;
-    PuntoF pt;
     for (float x = pxi; x < pxf; x+=0.0005){
         y = sin(x);
-        pt.x = pCen.x + (x * zoom);
-        pt.y = pCen.y - (y * zoom);
-        SetPixel(hdc, pt.x , pt.y , RGB(160, 100, 240));
+        pintarPunto(x,y);
     }
 }
 void PlanoXY::fCos(){
     int pxi = -50;
     int pxf = 50;
     float y;
-    PuntoF pt;
     for (float x = pxi; x < pxf; x+=0.0005){
         y = cos(x);
-        pt.x = pCen.x + (x * zoom);
-        pt.y = pCen.y - (y * zoom);
-        SetPixel(hdc, pt.x , pt.y , RGB(160, 100, 240));
+        pintarPunto(x,y);
     }
 }
 void PlanoXY::fTan(){
     int pxi = -50;
     int pxf = 50;
     float y;
-    PuntoF pt;
     for (float x = pxi; x < pxf; x+=0.0005){
         y = tan(x);
-        pt.x = pCen.x + (x * zoom);
-        pt.y = pCen.y - (y * zoom);
-        SetPixel(hdc, pt.x , pt.y , RGB(160, 100, 240));
+        pintarPunto(x,y);
     }
 }
 
@@ -354,18 +344,13 @@ void PlanoXY::circunferencia(float r,PuntoF pcc){
     int pxi = pcc.x-r;
     int pxf = pcc.x+r;
     float y ;
-    PuntoF pt;
     for (float x = pxi; x < pxf; x+=0.00005){
         y = f(x,r,-1,pcc);
-        pt.x = pCen.x + (x * zoom);
-        pt.y = pCen.y - (y * zoom);
-        SetPixel(hdc, pt.x , pt.y , RGB(255, 2, 106));
+        pintarPunto(x,y);
     }
     for (float x = pxi; x < pxf; x+=0.00005){
         y = f(x,r,1,pcc);
-        pt.x = pCen.x + (x * zoom);
-        pt.y = pCen.y - (y * zoom);
-        SetPixel(hdc, pt.x , pt.y , RGB(255, 2, 106));
+        pintarPunto(x,y);
     }
 }
 
@@ -432,18 +417,14 @@ void PlanoXY::integral(float a,float b){
 
     for(x=x0;x<=xn;x+=0.001){
         y=f(x);
-        pt.x=pCen.x+x*zoom;
-        pt.y=pCen.y-y*zoom;
-        SetPixel(hdc,pt.x,pt.y,RGB(255, 2, 106));
+        pintarPunto(x,y);
     }
 
     //--------------------------------------------------------------
     // EN ESTA SECCION SE  GRAFICA EL AREA DEL LA INTEGRAL
-    for(x=a;x<=b;x+=0.2){
+    for(x=a;x<=b;x+=0.1){
         for(y=0;y<=f(x);y+=0.1){
-            pt.x = pCen.x+x*zoom;
-            pt.y = pCen.y-y*zoom;
-            SetPixel(hdc,pt.x,pt.y,RGB(117,113,94));
+            pintarPunto(x,y);
         }
     }
 
