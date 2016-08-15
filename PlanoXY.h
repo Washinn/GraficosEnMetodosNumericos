@@ -48,6 +48,7 @@ public:
     //void areaRectangulo();
     void grafic3D();
     void pintarPunto(PuntoF p);
+    void pintarPunto(float x,float y);
     PuntoF transformar(PuntoF p);
 };
 
@@ -113,7 +114,7 @@ void PlanoXY::dibujarPlano(){
             SetPixel(hdc, x, y, RGB(55, 55, 55));
         }
     }
-/*
+
     // RECTA VERTICAL  CENTRO
     for (int y = pIni.y; y <= pFin.y; ++y)    {
         SetPixel(hdc, centro.x, y, RGB(53, 222, 243));
@@ -122,7 +123,7 @@ void PlanoXY::dibujarPlano(){
     for (int x = pIni.x; x <= pFin.x; ++x)    {
         SetPixel(hdc, x, centro.y, RGB(53, 222, 243));
     }
-*/
+
 }
 
 
@@ -439,7 +440,7 @@ void PlanoXY::integral(float a,float b){
     //--------------------------------------------------------------
     // EN ESTA SECCION SE  GRAFICA EL AREA DEL LA INTEGRAL
     for(x=a;x<=b;x+=0.2){
-        for(y=0;y<=f(x);y+=0.2){
+        for(y=0;y<=f(x);y+=0.1){
             pt.x = pCen.x+x*zoom;
             pt.y = pCen.y-y*zoom;
             SetPixel(hdc,pt.x,pt.y,RGB(117,113,94));
@@ -590,6 +591,13 @@ void PlanoXY::grafic3D(){
 
 }
 
+
+
+void PlanoXY::pintarPunto(float x,float y){
+    PuntoF res,p(x,y);
+    res = transformar(p);
+    SetPixel(hdc,res.x,res.y,RGB(240,230,96));
+}
 
 void PlanoXY::pintarPunto(PuntoF p){
     PuntoF res;

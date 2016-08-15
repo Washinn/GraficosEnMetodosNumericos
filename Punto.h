@@ -19,7 +19,6 @@ public:
 
 
 
-
 class PuntoF {
 public:
     float x;
