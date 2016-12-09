@@ -1,24 +1,3 @@
-class PuntoI {
-public:
-    int x;
-    int y;
-    
-    PuntoI(int a,int b){
-        x = a;
-        y = b;
-    }
-    PuntoI(){
-        x = 0;
-        y = 0;
-    };
-    void asign(int a,int b){
-        x = a;
-        y = b;
-    }
-};
-
-
-
 class PuntoF {
 public:
     float x;
@@ -28,6 +7,7 @@ public:
         x = a;
         y = b;
     }
+    
     PuntoF(){
         x = 0;
         y = 0;
@@ -38,10 +18,6 @@ public:
         y = b;
     }
 };
-
-
-
-///////////////////////////////////////////////////////////////////////////
 
 
 
@@ -70,6 +46,7 @@ public:
     }
 };
 
+////////////////////////////////////////////////////////////////////////
 
 class PuntoI_3D {
 public:
@@ -95,4 +72,23 @@ public:
         z = c;
     }
     
+};
+
+class PuntoI {
+public:
+    int x;
+    int y;
+    
+    PuntoI(int a,int b){
+        x = a;
+        y = b;
+    }
+    PuntoI(){
+        x = 0;
+        y = 0;
+    };
+    void asign(int a,int b){
+        x = a;
+        y = b;
+    }
 };

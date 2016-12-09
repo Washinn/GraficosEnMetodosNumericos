@@ -23,7 +23,7 @@ BOOL CALLBACK DlgMain(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 
             //plano1.integral(1,4,30);
-
+/*
             PuntoF puntos[3];
             puntos[0].asign( -2.0, 4.0);
             puntos[1].asign( -1.0, 1.0);
@@ -40,19 +40,18 @@ BOOL CALLBACK DlgMain(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
             puntos_2[6].asign(6.0, 6.0);
             puntos_2[7].asign(8.0, 8.0);
             plano1.Newton(puntos_2,8,2.0);
-/*
+
             plano1.fCos();
             plano1.fSin();
             plano1.fTan();
-*/
+
             PuntoF pcentro;
             pcentro.asign(1.0,2.0);
             plano1.circunferencia(5,pcentro);
-
-            plano1.integral(2,5);
-            //plano1.grafic3D();
-
-            plano1.integral(2,5);
+            */
+            //plano1.integral(2,5);
+            plano1.graficCoordenadas();
+            plano1.grafic3D();
 
             EndPaint(hwndDlg,&paint_struct);
         }

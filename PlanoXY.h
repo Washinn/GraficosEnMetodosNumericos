@@ -23,6 +23,7 @@ private:
     float g(float *a0,int n,float s);
     float c_b(float s,float n);
     float fact (float n);
+    PuntoF transformar(PuntoF p);
 
     float f(float x,float z);
     float f(float x,float z,int s);
@@ -31,6 +32,12 @@ private:
     float xx(float x,float z);
     float yy(float x,float z);
     float zz(float x,float z);
+
+
+    float coordenadaX(float x,float z);
+    float coordenadaY(float x,float z);
+    float coordenadaZ(float x,float z);
+
 
 
 
@@ -44,12 +51,13 @@ public:
     void circunferencia(float r,PuntoF pcc);
 
     void integral(float a,float b);
-    //void integralGrafic(float a,float b);
-    //void areaRectangulo();
     void grafic3D();
-    void pintarPunto(PuntoF p);
-    void pintarPunto(float x,float y);
-    PuntoF transformar(PuntoF p);
+    void pintarPunto2D(PuntoF p);
+    void pintarPunto2D(float x,float y);
+
+
+    void graficCoordenadas();
+
 };
 
 
@@ -117,7 +125,7 @@ void PlanoXY::dibujarPlano(){
             SetPixel(hdc, x, y, RGB(55, 55, 55));
         }
     }
-
+/*
     // RECTA VERTICAL  CENTRO
     for (int y = pIni.y; y <= pFin.y; ++y)    {
         SetPixel(hdc, centro.x, y, RGB(53, 222, 243));
@@ -126,7 +134,7 @@ void PlanoXY::dibujarPlano(){
     for (int x = pIni.x; x <= pFin.x; ++x)    {
         SetPixel(hdc, x, centro.y, RGB(53, 222, 243));
     }
-
+*/
 }
 
 
@@ -171,7 +179,7 @@ void PlanoXY::Lagrange(PuntoF *puntos,int n){
     float x,y;
     for (x = puntos[0].x ; x <= puntos[n-1].x ; x += 0.009) {
         y = intLagrange(puntos,n,x);
-        pintarPunto(x,y);
+        pintarPunto2D(x,y);
     }
 }
 
@@ -179,6 +187,24 @@ void PlanoXY::Lagrange(PuntoF *puntos,int n){
 
 
 
+
+
+void PlanoXY::pintarPunto2D(float x,float y){
+    PuntoF p(x,y);
+    p = transformar(p);
+    SetPixel(hdc,p.x,p.y,RGB(240,230,96));
+}
+
+void PlanoXY::pintarPunto2D(PuntoF p){
+    p = transformar(p);
+    SetPixel(hdc,p.x,p.y,RGB(240,230,96));
+}
+
+PuntoF PlanoXY::transformar(PuntoF p){
+    p.x = pCen.x + p.x * zoom;
+    p.y = pCen.y - p.y * zoom;
+    return p;
+}
 
 
 
@@ -288,7 +314,7 @@ void PlanoXY::Newton(PuntoF *puntos,int n ,float h){
     for (x=puntos[0].x;x<puntos[n-1].x;x+=0.005) {
         s = (x - puntos[0].x)/h;
         y = g(a0,n,s);
-        pintarPunto(x,y);
+        pintarPunto2D(x,y);
     }
 }
 
@@ -309,7 +335,7 @@ void PlanoXY::fSin(){
     float y;
     for (float x = pxi; x < pxf; x+=0.0005){
         y = sin(x);
-        pintarPunto(x,y);
+        pintarPunto2D(x,y);
     }
 }
 void PlanoXY::fCos(){
@@ -318,7 +344,7 @@ void PlanoXY::fCos(){
     float y;
     for (float x = pxi; x < pxf; x+=0.0005){
         y = cos(x);
-        pintarPunto(x,y);
+        pintarPunto2D(x,y);
     }
 }
 void PlanoXY::fTan(){
@@ -327,7 +353,7 @@ void PlanoXY::fTan(){
     float y;
     for (float x = pxi; x < pxf; x+=0.0005){
         y = tan(x);
-        pintarPunto(x,y);
+        pintarPunto2D(x,y);
     }
 }
 
@@ -346,11 +372,11 @@ void PlanoXY::circunferencia(float r,PuntoF pcc){
     float y ;
     for (float x = pxi; x < pxf; x+=0.00005){
         y = f(x,r,-1,pcc);
-        pintarPunto(x,y);
+        pintarPunto2D(x,y);
     }
     for (float x = pxi; x < pxf; x+=0.00005){
         y = f(x,r,1,pcc);
-        pintarPunto(x,y);
+        pintarPunto2D(x,y);
     }
 }
 
@@ -410,21 +436,20 @@ void PlanoXY::integral(float a,float b){
     //  PARA GRAFICAR SE  TENDRA QUE TENER UN INTERVALO EN EL EJE X
     //  x VARIA  DESDE x0 HASTA xn
     float x0,xn;
-    PuntoF pt;
     float x,y;
     x0=-50;
     xn=50;
 
     for(x=x0;x<=xn;x+=0.001){
         y=f(x);
-        pintarPunto(x,y);
+        pintarPunto2D(x,y);
     }
 
     //--------------------------------------------------------------
     // EN ESTA SECCION SE  GRAFICA EL AREA DEL LA INTEGRAL
     for(x=a;x<=b;x+=0.1){
         for(y=0;y<=f(x);y+=0.1){
-            pintarPunto(x,y);
+            pintarPunto2D(x,y);
         }
     }
 
@@ -489,6 +514,9 @@ void PlanoXY::integralGrafic(float a,float b){
 	cout<<I<<endl;
 }
 */
+
+
+
 
 
 void PlanoXY::grafic3D(){
@@ -574,21 +602,102 @@ void PlanoXY::grafic3D(){
 
 
 
-void PlanoXY::pintarPunto(float x,float y){
-    PuntoF res,p(x,y);
-    res = transformar(p);
-    SetPixel(hdc,res.x,res.y,RGB(240,230,96));
+void PlanoXY::graficCoordenadas(){
+    int Maxx=600;
+    int Maxy=500;
+
+    // ROTACION RESPECTO AL EJE X
+    // ROTACION RESPECTO AL EJE Y
+    //int rot_x = 60;
+    int rot_x = 45;
+    int rot_y = 85;
+/*
+    int rot_x = 45;
+    int rot_y = 5;
+*/
+
+
+
+    int posicion1 = rot_x;
+    int posicion2 = rot_y;
+    float Elev=posicion1*(2*M_PI)/100;
+    float Giro=posicion2*(2*M_PI)/100;
+    float x,y,z;
+    float var=0.5;
+    float xini=-100,xfin=100;
+    float posx,posy;
+    float x2D,y2D;
+
+    //PuntoF_3D
+
+    //float x,y,z;
+
+
+
+    for(x=xini;x<xfin;x+=var){
+        for(z=xini;z<xfin;z+=var){
+            y=coordenadaX(x,z);
+            x2D= x*cos(Elev)-z*sin(Elev);
+            y2D=-x*sin(Elev)*sin(Giro)+y*cos(Giro)-z*cos(Elev)*sin(Giro);
+            posx=x2D*Maxx/(xfin-xini);
+            posy=y2D*Maxx/(xfin-xini);
+            //SetPixel(hdc,pCen.x+posx,pCen.y-posy,RGB(200+x,sqrt(190+y),96+z));
+            SetPixel(hdc,pCen.x+posx,pCen.y-posy,RGB(sqrt(200+x),190+y,96+z));
+            //SetPixel(hdc,pCen.x+posx,pCen.y-posy,RGB(x*x,z*z,y*y));
+
+            //SetPixel(hdc,pCen.x+posx,pCen.y-posy,RGB(240,230,136));
+        }
+    }
+
+    float yyy = 0;
+    for(x=xini;x<xfin;x+=var){
+        for(z=xini;z<xfin;z+=var){
+            y=yyy;
+            x2D= x*cos(Elev)-z*sin(Elev);
+            y2D=-x*sin(Elev)*sin(Giro)+y*cos(Giro)-z*cos(Elev)*sin(Giro);
+            posx=x2D*Maxx/(xfin-xini);
+            posy=y2D*Maxx/(xfin-xini);
+            //SetPixel(hdc,pCen.x+posx,pCen.y-posy,RGB(200+x,sqrt(190+y),96+z));
+            SetPixel(hdc,pCen.x+posx,pCen.y-posy,RGB(sqrt(200+x),190+y,96+z));
+            //SetPixel(hdc,pCen.x+posx,pCen.y-posy,RGB(x*x,z*z,y*y));
+
+            //SetPixel(hdc,pCen.x+posx,pCen.y-posy,RGB(240,230,136));
+            yyy++;
+        }
+        yyy++;
+    }
+
+    for(x=xini;x<xfin;x+=var){
+        for(z=xini;z<xfin;z+=var){
+            y=coordenadaZ(x,z);
+            x2D= x*cos(Elev)-z*sin(Elev);
+            y2D=-x*sin(Elev)*sin(Giro)+y*cos(Giro)-z*cos(Elev)*sin(Giro);
+            posx=x2D*Maxx/(xfin-xini);
+            posy=y2D*Maxx/(xfin-xini);
+            //SetPixel(hdc,pCen.x+posx,pCen.y-posy,RGB(200+x,sqrt(190+y),96+z));
+            SetPixel(hdc,pCen.x+posx,pCen.y-posy,RGB(sqrt(200+x),190+y,96+z));
+            //SetPixel(hdc,pCen.x+posx,pCen.y-posy,RGB(x*x,z*z,y*y));
+
+            //SetPixel(hdc,pCen.x+posx,pCen.y-posy,RGB(240,230,136));
+        }
+    }
+
+
+
+
+
 }
 
-void PlanoXY::pintarPunto(PuntoF p){
-    PuntoF res;
-    res = transformar(p);
-    SetPixel(hdc,res.x,res.y,RGB(240,230,96));
+
+
+
+float PlanoXY::coordenadaX(float x,float z){
+    return x;
+}
+float PlanoXY::coordenadaY(float x,float z){
+    return x+z;
+}
+float PlanoXY::coordenadaZ(float x,float z){
+    return z;
 }
 
-PuntoF PlanoXY::transformar(PuntoF p){
-    PuntoF pTrasns;
-    pTrasns.x = pCen.x + p.x * zoom;
-    pTrasns.y = pCen.y - p.y * zoom;
-    return pTrasns;
-}
